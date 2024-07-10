@@ -17,7 +17,7 @@ Item{
     onDisplayModeChanged: {
         if(displayMode == Common.DisplayMode.Scale)
             player.fillMode = SceneViewer.STRETCH;
-        else if(displayMode == Common.DisplayMode.Aspect)
+        else if(displayMode == Common.DisplayMode.Aspect || displayMode == Common.DisplayMode.Tile)
             player.fillMode = SceneViewer.ASPECTFIT;
         else if(displayMode == Common.DisplayMode.Crop)
             player.fillMode = SceneViewer.ASPECTCROP;

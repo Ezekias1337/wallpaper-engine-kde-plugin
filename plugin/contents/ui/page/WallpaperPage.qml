@@ -651,6 +651,7 @@ RowLayout {
                                             text: "Scale to Fill",
                                             value: Common.DisplayMode.Scale
                                         },
+                                        { text: "Tile", value: Common.DisplayMode.Tile }
                                     ],
                                     def_val: cfg_DisplayMode,
                                 }

@@ -16,7 +16,7 @@ Item{
     onDisplayModeChanged: {
         if(displayMode == Common.DisplayMode.Scale)
             videoView.fillMode = VideoOutput.Stretch;
-        else if(displayMode == Common.DisplayMode.Aspect)
+        else if(displayMode == Common.DisplayMode.Aspect || displayMode == Common.DisplayMode.Tile)
             videoView.fillMode = VideoOutput.PreserveAspectFit;
         else if(displayMode == Common.DisplayMode.Crop)
             videoView.fillMode = VideoOutput.PreserveAspectCrop;

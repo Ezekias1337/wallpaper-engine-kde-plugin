@@ -2,7 +2,42 @@ import QtQuick 2.5
 import com.github.catsout.wallpaperEngineKde 1.2
 import ".."
 
-Item{
+Item {
+    id: root
+    width: 1920
+    height: 1080
+
+    property alias displayMode: displayMode
+
+    Image {
+        id: mainImage
+        source: "path/to/your/image"
+        anchors.centerIn: parent
+    }
+
+    Repeater {
+        id: backgroundRepeater
+        model: 2 // Left and right copies
+        delegate: Image {
+            source: mainImage.source
+            x: mainImage.x + (index == 0 ? -mainImage.width : mainImage.width)
+            y: mainImage.y
+        }
+    }
+
+    function tileBackgroundImage() {
+        // Ensure mainImage is centered
+        mainImage.anchors.centerIn = parent
+
+        // Remove any existing repeated images
+        backgroundRepeater.model = 0
+
+        // Add left and right copies
+        backgroundRepeater.model = 2
+    }
+}
+
+Item {
     id: videoItem
     anchors.fill: parent
     property alias source: player.source
@@ -12,33 +47,32 @@ Item{
     property var volumeFade: Common.createVolumeFade(
         videoItem, 
         Qt.binding(function() { return background.mute ? 0 : background.volume; }),
-        (volume) => { player.volume = volume; }
+        function(volume) { player.volume = volume; }
     )
-    
+
     onDisplayModeChanged: {
-        if(videoItem.displayMode == Common.DisplayMode.Crop) {
+        if (videoItem.displayMode == Common.DisplayMode.Crop) {
             player.setProperty("keepaspect", true);
             player.setProperty("panscan", 1.0);
-        } else if(videoItem.displayMode == Common.DisplayMode.Aspect) {
+        } else if (videoItem.displayMode == Common.DisplayMode.Aspect) {
             player.setProperty("keepaspect", true);
             player.setProperty("panscan", 0.0);
-        } else if(videoItem.displayMode == Common.DisplayMode.Scale) {
+        } else if (videoItem.displayMode == Common.DisplayMode.Scale) {
             player.setProperty("keepaspect", false);
             player.setProperty("panscan", 0.0);
+        } else if (videoItem.displayMode == Common.DisplayMode.Tile) {
+            player.setProperty("keepaspect", true);
+            player.setProperty("panscan", 0.0);
+            root.tileBackgroundImage();
         }
     }
-    // it's ok for toggle, true will always cause a signal at first
+
     onStatsChanged: {
-        player.command(["script-binding","stats/display-stats-toggle"]);
+        player.command(["script-binding", "stats/display-stats-toggle"]);
     }
 
     onVideoRateChanged: player.setProperty('speed', videoRate);
 
-    // logfile
-    // source
-    // mute
-    // volume
-    // fun:setProperty(name,value)
     Mpv {
         id: player
         anchors.fill: parent
@@ -51,22 +85,24 @@ Item{
             }
         }
     }
-    Component.onCompleted:{
+
+    Component.onCompleted: {
         background.nowBackend = 'mpv';
         videoItem.displayModeChanged();
     }
 
-    function play(){
-        // stop pause time to avoid quick switch which cause keep pause 
+    function play() {
         pauseTimer.stop();
         player.play();
         volumeFade.start();
     }
-    function pause(){
+
+    function pause() {
         volumeFade.stop();
         pauseTimer.start();
     }
-    Timer{
+
+    Timer {
         id: pauseTimer
         running: false
         repeat: false
@@ -75,6 +111,6 @@ Item{
             player.pause();
         }
     }
-    function getMouseTarget() {
-    }
+
+    function getMouseTarget() {}
 }

@@ -133,6 +133,7 @@ Flickable {
                             text: "Scale to Fill",
                             value: Common.DisplayMode.Scale
                         },
+                        { text: "Tile", value: Common.DisplayMode.Tile }
                     ]
                     textRole: "text"
                     onActivated: cfg_DisplayMode = Common.cbCurrentValue(this)
