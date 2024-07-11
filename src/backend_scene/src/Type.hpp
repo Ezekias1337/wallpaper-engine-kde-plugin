@@ -87,7 +87,8 @@ enum class FillMode
 {
     STRETCH,
     ASPECTFIT,
-    ASPECTCROP
+    ASPECTCROP,
+    TILE
 };
 
 enum class TextureWrap

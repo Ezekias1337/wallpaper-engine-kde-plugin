@@ -475,11 +475,35 @@ void VulkanRender::Impl::UpdateCameraFillMode(wallpaper::Scene&   scene,
         gPerCam.SetAspect(fboAspect);
         gPerCam.SetFov(algorism::CalculatePersperctiveFov(1000.0f, gCam.Height()));
         break;
+    case FillMode::TILE:
+        // Calculate how many times the image should be repeated horizontally
+        double tileWidth = sw;
+        double tileHeight = sh;
+        if (fboAspect > sAspect) {
+            tileWidth = sh * fboAspect;
+            tileHeight = sh;
+        } else {
+            tileWidth = sw;
+            tileHeight = sw / fboAspect;
+        }
+
+        // Set the camera width to cover the entire width with repeated images
+        gCam.SetWidth(width);
+        gCam.SetHeight(tileHeight);
+        gPerCam.SetAspect(fboAspect);
+        gPerCam.SetFov(algorism::CalculatePersperctiveFov(1000.0f, gCam.Height()));
+
+        // Update the tiling transform
+        scene.ortho[0] = tileWidth; // Tile width
+        scene.ortho[1] = tileHeight; // Tile height
+        break;
     }
+
     gCam.Update();
     gPerCam.Update();
     scene.UpdateLinkedCamera("global");
 }
+
 
 void VulkanRender::Impl::clearLastRenderGraph() {
     for (auto& p : m_passes) {

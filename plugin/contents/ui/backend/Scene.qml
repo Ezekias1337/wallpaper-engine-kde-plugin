@@ -22,7 +22,7 @@ Item {
         } else if (displayMode == Common.DisplayMode.Crop) {
             player.fillMode = SceneViewer.ASPECTCROP;
         } else if (displayMode == Common.DisplayMode.Tile) {
-            player.fillMode = SceneViewer.Tile;
+            player.fillMode = SceneViewer.TILE;
             tileContent();
         }
     }

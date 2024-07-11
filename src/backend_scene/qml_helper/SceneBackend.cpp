@@ -54,6 +54,7 @@ wallpaper::FillMode ToWPFillMode(int fillMode) {
     switch ((SceneObject::FillMode)fillMode) {
     case SceneObject::FillMode::STRETCH: return wallpaper::FillMode::STRETCH;
     case SceneObject::FillMode::ASPECTFIT: return wallpaper::FillMode::ASPECTFIT;
+    case SceneObject::FillMode::TILE: return wallpaper::FillMode::TILE;
     case SceneObject::FillMode::ASPECTCROP:
     default: return wallpaper::FillMode::ASPECTCROP;
     }
