@@ -7,7 +7,7 @@ Item {
     width: 1920
     height: 1080
 
-    property alias displayMode: displayMode
+    property int displayMode: background.displayMode
 
     Image {
         id: mainImage
