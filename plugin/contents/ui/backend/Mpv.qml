@@ -11,7 +11,7 @@ Item {
 
     Image {
         id: mainImage
-        source: "path/to/your/image"
+        source: background.source // Use the dynamic source from main.qml
         anchors.centerIn: parent
         visible: false // Hide the main image itself
     }
