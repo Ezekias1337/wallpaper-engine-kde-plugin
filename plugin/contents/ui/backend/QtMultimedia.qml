@@ -16,20 +16,42 @@ Item{
     onDisplayModeChanged: {
         if(displayMode == Common.DisplayMode.Scale)
             videoView.fillMode = VideoOutput.Stretch;
-        else if(displayMode == Common.DisplayMode.Aspect || displayMode == Common.DisplayMode.Tile)
+        else if(displayMode == Common.DisplayMode.Aspect)
             videoView.fillMode = VideoOutput.PreserveAspectFit;
-        else if(displayMode == Common.DisplayMode.Crop)
+        else if(displayMode == Common.DisplayMode.Tile) {
+            videoView.fillMode = VideoOutput.PreserveAspectFit;
+            tileContent();  // Call the function to tile content
+        } else if(displayMode == Common.DisplayMode.Crop)
             videoView.fillMode = VideoOutput.PreserveAspectCrop;
+    }
+
+    Grid {
+        id: tileGrid
+        anchors.fill: parent
+        visible: false
+        columns: Math.ceil(width / videoView.width)
+        rows: Math.ceil(height / videoView.height)
+
+        Repeater {
+            model: tileGrid.columns * tileGrid.rows
+            delegate: VideoOutput {
+                id: videoView
+                width: videoItem.width / tileGrid.columns
+                height: videoItem.height / tileGrid.rows
+                source: player
+                flushMode: VideoOutput.LastFrame
+                fillMode: VideoOutput.PreserveAspectFit
+            }
+        }
     }
 
     VideoOutput {
         id: videoView
-        //fillMode: wallpaper.configuration.FillMode
         anchors.fill: parent
         source: player
-        // keep lastframe for loop 
-        flushMode: VideoOutput.LastFrame 
+        flushMode: VideoOutput.LastFrame
     }
+    
     MediaPlayer {
         id: player
         autoPlay: true
@@ -38,9 +60,15 @@ Item{
         volume: 0.0
         playbackRate: background.videoRate
     }
+
     Component.onCompleted:{
         background.nowBackend = "QtMultimedia";
         videoItem.displayModeChanged();
+    }
+
+    function tileContent() {
+        // Make the grid visible for tiling
+        tileGrid.visible = true;
     }
 
     function play(){
@@ -48,10 +76,12 @@ Item{
         player.play();
         volumeFade.start();
     }
+
     function pause(){
         volumeFade.stop();
         pauseTimer.start();
     }
+
     Timer{
         id: pauseTimer
         running: false
@@ -61,6 +91,7 @@ Item{
             player.pause();
         }
     }
+
     function getMouseTarget() {
     }
 }

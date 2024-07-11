@@ -14,7 +14,8 @@ QtObject {
     enum DisplayMode {
         Aspect,
         Crop,
-        Scale
+        Scale,
+        Tile
     }
     enum SortMode {
         Id,

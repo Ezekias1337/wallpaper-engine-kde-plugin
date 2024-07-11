@@ -13,27 +13,39 @@ Item {
         id: mainImage
         source: "path/to/your/image"
         anchors.centerIn: parent
+        visible: false // Hide the main image itself
     }
 
-    Repeater {
-        id: backgroundRepeater
-        model: 2 // Left and right copies
-        delegate: Image {
-            source: mainImage.source
-            x: mainImage.x + (index == 0 ? -mainImage.width : mainImage.width)
-            y: mainImage.y
-        }
+    Grid {
+        id: tileGrid
+        anchors.fill: parent
+        visible: false // Make visible only when tiling
     }
 
     function tileBackgroundImage() {
         // Ensure mainImage is centered
         mainImage.anchors.centerIn = parent
 
-        // Remove any existing repeated images
-        backgroundRepeater.model = 0
+        // Calculate the number of tiles needed
+        var columns = Math.ceil(root.width / mainImage.width);
+        var rows = Math.ceil(root.height / mainImage.height);
+        var totalTiles = columns * rows;
 
-        // Add left and right copies
-        backgroundRepeater.model = 2
+        // Update the repeater model
+        tileGrid.visible = true
+        tileGrid.columns = columns;
+        tileGrid.rows = rows;
+
+        tileRepeater.model = totalTiles;
+    }
+
+    Repeater {
+        id: tileRepeater
+        delegate: Image {
+            source: mainImage.source
+            width: mainImage.width
+            height: mainImage.height
+        }
     }
 }
 

@@ -13,3 +13,6 @@ make -j$nproc
 make install_pkg
 # install lib
 sudo make install
+
+# Restart KDE
+systemctl --user restart plasma-plasmashell.service
